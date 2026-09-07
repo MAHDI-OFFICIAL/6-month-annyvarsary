@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Monthaversary 🎀</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+  /* ============================================================
+     EASY CUSTOMIZATION
+     Edit the CSS variables and the CONFIG object at the bottom
+     of the <script> to personalize names, messages, photos and
+     your song link.
+     ============================================================ */
+
+  :root{
+    --cream:        #fffaf3;
+    --cream-deep:   #fdf1e6;
+    --pink-pale:    #ffe4ec;
+    --pink-mid:     #ffb8cf;
+    --pink-strong:  #ff8fae;
+    --pink-deep:    #e8607f;
+    --mauve-text:   #8a5b68;
+    --brown-text:   #6b4a45;
+    --green-soft:   #cfe8b8;
+    --green-deep:   #9fc97e;
+    --yellow-soft:  #ffe9a3;
+    --yellow-deep:  #f3c95b;
+    --mint-soft:    #bfe9e0;
+    --mint-deep:    #7fc9ba;
+    --bear-tan:     #d9a myenv2;
+    --shadow-soft:  0 10px 30px rgba(232,96,127,0.18);
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0; height:100%;
+    background: radial-gradient(circle at 20% 15%, var(--cream-deep), var(--cream) 60%);
+    font-family:'Poppins', sans-serif;
+    color: var(--brown-text);
+    overflow-x:hidden;
+  }
+
+  .heading-font{
+    font-family:'Gaegu', cursive;
+  }
+
+  /* ---------- decorative dashed heart borders on the stage ---------- */
+  .stage{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 40px 90px;
+  }
+
+  .frame-hearts{
+    position:fixed;
+    top:0; bottom:0;
+    width:70px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:space-evenly;
+    pointer-events:none;
+    z-index:1;
+  }
+  .frame-hearts.left{ left:0; }
+  .frame-hearts.right{ right:0; }
+  .frame-hearts svg{
+    width: 26px; height:26px;
+    opacity:.85;
+    filter: drop-shadow(0 2px 2px rgba(232,96,127,0.15));
+  }
+  .frame-hearts .sm{ width:16px; height:16px; opacity:.55; }
+
+  /* soft floating hearts in the background */
+  #floatingHearts{
+    position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0;
+  }
+  .float-heart{
+    position:absolute;
+    bottom:-40px;
+    opacity:.35;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp{
+    0%   { transform: translateY(0) rotate(0deg);   opacity:0; }
+    10%  { opacity:.4; }
+    90%  { opacity:.25; }
+    100% { transform: translateY(-110vh) rotate(25deg); opacity:0; }
+  }
+
+  /* ============================================================
+     SCREENS
+     ============================================================ */
+  .screen{
+    position:relative;
+    z-index:2;
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition: opacity .5s ease, transform .5s ease;
+  }
+  .screen.hidden{
+    display:none;
+  }
+  .screen.fade-in{
+    animation: screenIn .6s ease both;
+  }
+  @keyframes screenIn{
+    from{ opacity:0; transform: translateY(18px) scale(.98); }
+    to  { opacity:1; transform: translateY(0) scale(1); }
+  }
+
+  /* ---------------- Envelope intro ---------------- */
+  .envelope-wrap{
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:22px;
+    user-select:none;
+    transition: transform .35s ease;
+  }
+  .envelope-wrap:hover{ transform: translateY(-6px); }
+  .envelope-wrap:hover .envelope-flap{ transform: rotateX(0deg); }
+
+  .envelope-scene{
+    width: 300px;
+    perspective: 900px;
+  }
+  .envelope-body{
+    position:relative;
+    width:100%;
+    height:190px;
+  }
+  .open-me-text{
+    font-family:'Gaegu', cursive;
+    font-size: 30px;
+    color: var(--pink-deep);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .open-me-text .arrow{
+    display:inline-block;
+    transform: rotate(10deg);
+    animation: nudge 1.6s ease-in-out infinite;
+  }
+  @keyframes nudge{
+    0%,100%{ transform: translate(0,0) rotate(10deg); }
+    50%{ transform: translate(4px,-4px) rotate(20deg); }
+  }
+
+  .envelope-wrap.opening .envelope-scene{
+    animation: envJump .55s ease forwards;
+  }
+  @keyframes envJump{
+    0%{ transform: scale(1); }
+    40%{ transform: scale(1.05) translateY(-10px); }
+    100%{ transform: scale(0.85) translateY(-30px); opacity:0; }
+  }
+  .envelope-wrap.opening .open-me-text{ opacity:0; transition: opacity .2s ease; }
+
+  /* ---------------- Main gift screen ---------------- */
+  .main-screen{
+    flex-direction:column;
+    gap: 10px;
+    padding-top: 10px;
+  }
+  .corner-critter{
+    position:absolute;
+    top: -6px;
+    width: 92px;
+  }
+  .corner-critter.bunny{ left: calc(50% - 300px); }
+  .corner-critter.bear{ right: calc(50% - 300px); }
+
+  .title{
+    font-family:'Gaegu', cursive;
+    font-weight:700;
+    font-size: clamp(34px, 5vw, 54px);
+    color: var(--pink-deep);
+    text-shadow: 0 2px 0 #fff, 0 4px 10px rgba(232,96,127,0.15);
+    margin: 6px 0 0 0;
+    letter-spacing: .5px;
+  }
+  .subtitle{
+    font-size: 16px;
+    color: var(--mauve-text);
+    margin: 0 0 18px 0;
+  }
+
+  .gift-grid{
+    display:flex;
+    gap: 42px;
+    flex-wrap: wrap;
+    justify-content:center;
+    padding: 10px 0 30px 0;
+  }
+
+  .gift-card{
+    background: transparent;
+    border: none;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 26px;
+    transition: transform .35s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .gift-card .box-svg{
+    width: 148px;
+    height: 148px;
+    filter: drop-shadow(0 12px 18px rgba(232,96,127,0.22));
+    transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+  }
+  .gift-card:hover{ transform: translateY(-4px); }
+  .gift-card:hover .box-svg{
+    transform: translateY(-10px) scale(1.06) rotate(-2deg);
+    animation: floatBox 1.8s ease-in-out infinite;
+  }
+  .gift-card:active .box-svg{ transform: scale(.94); }
+  @keyframes floatBox{
+    0%,100%{ transform: translateY(-10px) scale(1.06) rotate(-2deg); }
+    50%{ transform: translateY(-16px) scale(1.06) rotate(2deg); }
+  }
+  .gift-label{
+    font-family:'Gaegu', cursive;
+    font-size: 22px;
+    color: var(--brown-text);
+    background: #fff;
+    padding: 4px 18px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+  .gift-hint{
+    font-size:12px;
+    color: var(--mauve-text);
+    opacity:.75;
+  }
+
+  /* ============================================================
+     MODAL
+     ============================================================ */
+  .modal-overlay{
+    position:fixed; inset:0;
+    background: rgba(139,90,101,0.35);
+    backdrop-filter: blur(3px);
+    display:flex; align-items:center; justify-content:center;
+    z-index: 50;
+    opacity:0;
+    animation: overlayIn .3s ease forwards;
+    padding: 20px;
+  }
+  .modal-overlay.hidden{ display:none; }
+  @keyframes overlayIn{ to{ opacity:1; } }
+
+  .modal-card{
+    position:relative;
+    background: linear-gradient(180deg, #fffefb, var(--cream));
+    border-radius: 32px;
+    max-width: 640px;
+    width:100%;
+    max-height: 86vh;
+    overflow-y:auto;
+    padding: 40px 44px 34px;
+    box-shadow: var(--shadow-soft);
+    border: 2px dashed var(--pink-mid);
+    transform: scale(.85) translateY(20px);
+    opacity:0;
+    animation: modalIn .38s cubic-bezier(.34,1.56,.64,1) forwards .05s;
+  }
+  @keyframes modalIn{
+    to{ transform: scale(1) translateY(0); opacity:1; }
+  }
+
+  .modal-close{
+    position: sticky;
+    float:right;
+    top:0;
+    margin-left: 12px;
+    background: var(--pink-pale);
+    color: var(--pink-deep);
+    border: none;
+    font-family:'Gaegu', cursive;
+    font-size: 16px;
+    padding: 8px 18px;
+    border-radius: 20px;
+    cursor:pointer;
+    transition: background .2s ease, transform .2s ease;
+  }
+  .modal-close:hover{ background: var(--pink-strong); color:#fff; transform: scale(1.05); }
+
+  .modal-close-bottom{
+    display:block;
+    margin: 26px auto 0;
+    background: var(--pink-strong);
+    color: #fff;
+    border: none;
+    font-family:'Gaegu', cursive;
+    font-size: 19px;
+    padding: 10px 34px;
+    border-radius: 24px;
+    cursor:pointer;
+    box-shadow: 0 8px 16px rgba(232,96,127,0.3);
+    transition: transform .2s ease, background .2s ease;
+  }
+  .modal-close-bottom:hover{ background: var(--pink-deep); transform: translateY(-2px); }
+
+  .reveal-title{
+    font-family:'Gaegu', cursive;
+    color: var(--pink-deep);
+    font-size: 34px;
+    margin: 0 0 18px 0;
+    text-align:center;
+  }
+
+  /* ---- Memories reveal ---- */
+  .memories-layout{
+    display:flex;
+    gap: 26px;
+    align-items:flex-start;
+    flex-wrap: wrap;
+    justify-content:center;
+  }
+  .polaroid-stack{
+    display:flex;
+    flex-direction:column;
+    gap: 14px;
+  }
+  .polaroid{
+    background:#fff;
+    padding: 10px 10px 22px;
+    border-radius: 6px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+    width: 170px;
+    transform: rotate(-3deg);
+  }
+  .polaroid:nth-child(2){ transform: rotate(3deg); align-self:flex-end; }
+  .polaroid .photo-slot{
+    width:100%;
+    aspect-ratio: 1/1;
+    border-radius: 3px;
+    background: linear-gradient(135deg, var(--pink-pale), var(--mint-soft));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color: var(--pink-deep);
+    font-size: 12px;
+    text-align:center;
+    padding: 6px;
+    overflow:hidden;
+  }
+  .polaroid .photo-slot img{
+    width:100%; height:100%; object-fit:cover;
+  }
+  .sticky-note{
+    background: #fff6de;
+    border-radius: 10px;
+    padding: 22px 22px;
+    width: 230px;
+    box-shadow: 2px 6px 14px rgba(0,0,0,0.08);
+    position:relative;
+    transform: rotate(2deg);
+    font-size: 14.5px;
+    line-height:1.6;
+    color: var(--brown-text);
+  }
+  .sticky-note::before{
+    content:"";
+    position:absolute;
+    top:-10px; left: 50%;
+    transform: translateX(-50%);
+    width: 46px; height: 18px;
+    background: rgba(255,184,207,0.7);
+    border-radius: 2px;
+  }
+
+  /* ---- Our Song reveal ---- */
+  .song-layout{
+    display:flex;
+    gap: 30px;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .song-text{
+    max-width: 260px;
+    font-size: 15.5px;
+    line-height:1.6;
+  }
+  .song-name{
+    font-family:'Gaegu', cursive;
+    font-size: 22px;
+    color: var(--pink-deep);
+    margin: 2px 0 10px;
+  }
+  .qr-box{
+    background:#fff;
+    border: 3px dashed var(--pink-mid);
+    border-radius: 18px;
+    padding: 14px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap: 10px;
+  }
+  .qr-box img{ width: 150px; height:150px; border-radius: 8px; }
+  .scan-btn{
+    background: var(--pink-strong);
+    color:#fff;
+    border:none;
+    font-family:'Gaegu', cursive;
+    font-size: 17px;
+    padding: 7px 24px;
+    border-radius: 18px;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-block;
+  }
+  .scan-btn:hover{ background: var(--pink-deep); }
+
+  /* ---- Letter reveal ---- */
+  .letter-card{
+    background: repeating-linear-gradient(#fffdf8, #fffdf8 27px, #ffeef2 28px);
+    border: 2px solid var(--pink-pale);
+    border-radius: 14px;
+    padding: 26px 30px;
+    max-width: 420px;
+    margin: 0 auto;
+    font-size: 15.5px;
+    line-height: 28px;
+    color: var(--brown-text);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+  }
+  .letter-card .salutation{
+    font-family:'Gaegu', cursive;
+    font-size: 20px;
+    color: var(--pink-deep);
+  }
+  .letter-card .sign-off{
+    font-family:'Gaegu', cursive;
+    font-size: 20px;
+    color: var(--pink-deep);
+    margin-top: 6px;
+    display:block;
+  }
+
+  /* ---------------- responsive ---------------- */
+  @media (max-width: 720px){
+    .stage{ padding: 30px 46px; }
+    .frame-hearts{ width: 40px; }
+    .corner-critter{ width: 62px; }
+    .corner-critter.bunny{ left: 6px; top: 4px; }
+    .corner-critter.bear{ right: 6px; top: 4px; }
+    .gift-grid{ gap: 22px; }
+    .gift-card .box-svg{ width: 110px; height: 110px; }
+    .modal-card{ padding: 30px 22px 26px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="floatingHearts"></div>
+
+<!-- decorative side hearts (shown on both screens) -->
+<div class="frame-hearts left" id="heartsLeft"></div>
+<div class="frame-hearts right" id="heartsRight"></div>
+
+<!-- ============ SCREEN 1: ENVELOPE ============ -->
+<div class="screen envelope-screen fade-in" id="envelopeScreen">
+  <div class="stage">
+    <div class="envelope-wrap" id="envelopeWrap">
+      <div class="envelope-scene">
+        <svg viewBox="0 0 300 210" class="envelope-body">
+          <!-- back flap -->
+          <polygon points="10,40 150,120 290,40 290,15 10,15" fill="#ffe9ef" stroke="#f6c7d6" stroke-width="2"/>
+          <!-- envelope body -->
+          <rect x="10" y="40" width="280" height="150" rx="14" fill="#fff6f8" stroke="#f6c7d6" stroke-width="2"/>
+          <!-- front folded flap -->
+          <polygon points="10,60 150,150 290,60 290,190 10,190" fill="#ffeef4" stroke="#f6c7d6" stroke-width="2"/>
+          <!-- heart seal -->
+          <path d="M150 148 C142 138,124 138,124 154 C124 168,150 182,150 182 C150 182,176 168,176 154 C176 138,158 138,150 148 Z" fill="#ff9fb8"/>
+          <!-- bunny -->
+          <g transform="translate(96,-6)">
+            <ellipse cx="20" cy="46" rx="7" ry="24" fill="#fff" stroke="#f2c2d2" stroke-width="2" transform="rotate(-10 20 46)"/>
+            <ellipse cx="46" cy="46" rx="7" ry="24" fill="#fff" stroke="#f2c2d2" stroke-width="2" transform="rotate(10 46 46)"/>
+            <ellipse cx="20" cy="46" rx="3.4" ry="16" fill="#ffd3e0" transform="rotate(-10 20 46)"/>
+            <ellipse cx="46" cy="46" rx="3.4" ry="16" fill="#ffd3e0" transform="rotate(10 46 46)"/>
+            <circle cx="33" cy="66" r="26" fill="#fffdfb" stroke="#f2c2d2" stroke-width="2"/>
+            <circle cx="24" cy="64" r="3" fill="#6b4a45"/>
+            <circle cx="42" cy="64" r="3" fill="#6b4a45"/>
+            <ellipse cx="33" cy="74" rx="3" ry="2.4" fill="#f2879f"/>
+            <circle cx="16" cy="76" r="4" fill="#ffd3e0" opacity=".8"/>
+            <circle cx="50" cy="76" r="4" fill="#ffd3e0" opacity=".8"/>
+          </g>
+          <!-- bear -->
+          <g transform="translate(168,-2)">
+            <circle cx="15" cy="24" r="11" fill="#e3b48a" stroke="#cf9a6c" stroke-width="2"/>
+            <circle cx="49" cy="24" r="11" fill="#e3b48a" stroke="#cf9a6c" stroke-width="2"/>
+            <circle cx="15" cy="24" r="5" fill="#f3d3b3"/>
+            <circle cx="49" cy="24" r="5" fill="#f3d3b3"/>
+            <circle cx="32" cy="46" r="27" fill="#eec39a" stroke="#cf9a6c" stroke-width="2"/>
+            <ellipse cx="32" cy="54" rx="11" ry="9" fill="#f7ddbe"/>
+            <circle cx="24" cy="42" r="3" fill="#6b4a45"/>
+            <circle cx="40" cy="42" r="3" fill="#6b4a45"/>
+            <ellipse cx="32" cy="52" rx="3" ry="2.2" fill="#8a5a3b"/>
+            <circle cx="15" cy="52" r="4" fill="#ffd3b0" opacity=".7"/>
+            <circle cx="49" cy="52" r="4" fill="#ffd3b0" opacity=".7"/>
+          </g>
+        </svg>
+      </div>
+      <p class="open-me-text heading-font">Open me <span class="arrow">↷</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 2: GIFT GRID ============ -->
+<div class="screen main-screen hidden" id="mainScreen">
+  <div class="stage" style="flex-direction:column; padding-top:70px;">
+
+    <svg class="corner-critter bunny" viewBox="0 0 90 90">
+      <ellipse cx="30" cy="30" rx="9" ry="30" fill="#fff" stroke="#f2c2d2" stroke-width="2" transform="rotate(-16 30 30)"/>
+      <ellipse cx="58" cy="30" rx="9" ry="30" fill="#fff" stroke="#f2c2d2" stroke-width="2" transform="rotate(16 58 30)"/>
+      <ellipse cx="30" cy="30" rx="4.4" ry="20" fill="#ffd3e0" transform="rotate(-16 30 30)"/>
+      <ellipse cx="58" cy="30" rx="4.4" ry="20" fill="#ffd3e0" transform="rotate(16 58 30)"/>
+      <circle cx="44" cy="58" r="30" fill="#fffdfb" stroke="#f2c2d2" stroke-width="2"/>
+      <circle cx="33" cy="56" r="3.4" fill="#6b4a45"/>
+      <circle cx="55" cy="56" r="3.4" fill="#6b4a45"/>
+      <ellipse cx="44" cy="67" rx="3.4" ry="2.6" fill="#f2879f"/>
+      <circle cx="24" cy="70" r="5" fill="#ffd3e0" opacity=".8"/>
+      <circle cx="64" cy="70" r="5" fill="#ffd3e0" opacity=".8"/>
+    </svg>
+
+    <svg class="corner-critter bear" viewBox="0 0 90 90">
+      <circle cx="20" cy="20" r="13" fill="#e3b48a" stroke="#cf9a6c" stroke-width="2"/>
+      <circle cx="64" cy="20" r="13" fill="#e3b48a" stroke="#cf9a6c" stroke-width="2"/>
+      <circle cx="20" cy="20" r="6" fill="#f3d3b3"/>
+      <circle cx="64" cy="20" r="6" fill="#f3d3b3"/>
+      <circle cx="42" cy="48" r="32" fill="#eec39a" stroke="#cf9a6c" stroke-width="2"/>
+      <ellipse cx="42" cy="58" rx="13" ry="10.5" fill="#f7ddbe"/>
+      <circle cx="32" cy="44" r="3.6" fill="#6b4a45"/>
+      <circle cx="52" cy="44" r="3.6" fill="#6b4a45"/>
+      <ellipse cx="42" cy="56" rx="3.4" ry="2.4" fill="#8a5a3b"/>
+      <circle cx="22" cy="58" r="5" fill="#ffd3b0" opacity=".7"/>
+      <circle cx="62" cy="58" r="5" fill="#ffd3b0" opacity=".7"/>
+    </svg>
+
+    <h1 class="title">Happy Monthaversary!</h1>
+    <p class="subtitle">pick a gift, my love 🎀</p>
+
+    <div class="gift-grid">
+      <button class="gift-card" data-gift="memories" aria-label="Open the memories gift">
+        <svg class="box-svg" viewBox="0 0 140 140">
+          <rect x="18" y="55" width="104" height="70" rx="8" fill="#cfe8b8" stroke="#a9cf8a" stroke-width="2"/>
+          <rect x="18" y="55" width="104" height="18" fill="#bfe0a4"/>
+          <rect x="60" y="55" width="20" height="70" fill="#eaf6dd"/>
+          <path d="M50 55 C40 30,58 12,70 30 C82 12,100 30,90 55 Z" fill="#eaf6dd" stroke="#a9cf8a" stroke-width="2"/>
+        </svg>
+        <span class="gift-label">Memories</span>
+        <span class="gift-hint">tap to open</span>
+      </button>
+
+      <button class="gift-card" data-gift="song" aria-label="Open the our song gift">
+        <svg class="box-svg" viewBox="0 0 140 140">
+          <rect x="18" y="55" width="104" height="70" rx="8" fill="#ffe9a3" stroke="#e9c869" stroke-width="2"/>
+          <rect x="18" y="55" width="104" height="18" fill="#ffdd80"/>
+          <rect x="60" y="55" width="20" height="70" fill="#fff4d2"/>
+          <path d="M50 55 C40 30,58 12,70 30 C82 12,100 30,90 55 Z" fill="#fff4d2" stroke="#e9c869" stroke-width="2"/>
+        </svg>
+        <span class="gift-label">Our Song</span>
+        <span class="gift-hint">tap to open</span>
+      </button>
+
+      <button class="gift-card" data-gift="letter" aria-label="Open the love letter gift">
+        <svg class="box-svg" viewBox="0 0 140 140">
+          <rect x="18" y="55" width="104" height="70" rx="8" fill="#bfe9e0" stroke="#8ecdbf" stroke-width="2"/>
+          <rect x="18" y="55" width="104" height="18" fill="#a6e2d5"/>
+          <rect x="60" y="55" width="20" height="70" fill="#e6f8f3"/>
+          <path d="M50 55 C40 30,58 12,70 30 C82 12,100 30,90 55 Z" fill="#e6f8f3" stroke="#8ecdbf" stroke-width="2"/>
+        </svg>
+        <span class="gift-label">Love Letter</span>
+        <span class="gift-hint">tap to open</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL ============ -->
+<div class="modal-overlay hidden" id="modalOverlay">
+  <div class="modal-card" id="modalCard">
+    <button class="modal-close" id="modalCloseTop">Close ✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIG — personalize everything here
+   ============================================================ */
+const CONFIG = {
+  partnerName: "My Love",
+
+  memories: {
+    title: "Forever Together",
+    photo1: "",   // paste an image URL, or leave blank to keep the placeholder
+    photo2: "",
+    note: "We've shared so many special memories together, and I still can't wait to make more. Every month with you feels like the best one yet."
+  },
+
+  song: {
+    title: "Our Song",
+    blurb: "Whenever I hear this one, I can't help but think of you.",
+    songName: "\u201COur Song\u201D \u2013 add your title here",
+    // paste your Spotify / YouTube link — the QR code updates automatically
+    link: "https://open.spotify.com/"
+  },
+
+  letter: {
+    title: "Words From My Heart",
+    salutation: "My love,",
+    body: "I just wanted to remind you how much you mean to me. Every day with you feels warmer, brighter, and a little more magical. Thank you for the laughs, the late nights, and the quiet moments in between. No matter where life takes us, you're my favourite place to return to. I'm so grateful for you, always.",
+    signOff: "I love you so much \u2014 Happy Monthaversary \u{1F49E}"
+  }
+};
+
+/* ============================================================
+   Floating background hearts
+   ============================================================ */
+function heartSVG(size, color){
+  return `<svg viewBox="0 0 32 29" width="${size}" height="${size}" style="display:block">
+    <path fill="${color}" d="M16 29 C4 20 0 13 0 8 C0 3 4 0 8 0 C11.5 0 14.5 2 16 5 C17.5 2 20.5 0 24 0 C28 0 32 3 32 8 C32 13 28 20 16 29 Z"/>
+  </svg>`;
+}
+
+const floatingHeartsEl = document.getElementById('floatingHearts');
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if(!prefersReducedMotion){
+  const colors = ['#ffb8cf','#ffd6e0','#f3c95b55'.slice(0,7),'#bfe9e0'];
+  for(let i=0;i<12;i++){
+    const d = document.createElement('div');
+    d.className = 'float-heart';
+    const size = 12 + Math.random()*16;
+    d.style.left = (Math.random()*100)+'vw';
+    d.style.animationDuration = (10 + Math.random()*10)+'s';
+    d.style.animationDelay = (Math.random()*10)+'s';
+    d.innerHTML = heartSVG(size, colors[i % colors.length]);
+    floatingHeartsEl.appendChild(d);
+  }
+}
+
+/* side frame hearts (bigger, alternating) */
+function fillFrame(el){
+  const big = ['#ffb8cf','#ff9fb8'];
+  for(let i=0;i<6;i++){
+    const d = document.createElement('div');
+    d.innerHTML = heartSVG(i % 2 === 0 ? 24 : 14, big[i % big.length]);
+    if(i % 2 !== 0) d.className='sm';
+    el.appendChild(d);
+  }
+}
+fillFrame(document.getElementById('heartsLeft'));
+fillFrame(document.getElementById('heartsRight'));
+
+/* ============================================================
+   Envelope -> main screen
+   ============================================================ */
+const envelopeScreen = document.getElementById('envelopeScreen');
+const envelopeWrap   = document.getElementById('envelopeWrap');
+const mainScreen     = document.getElementById('mainScreen');
+
+envelopeWrap.addEventListener('click', () => {
+  if(envelopeWrap.classList.contains('opening')) return;
+  envelopeWrap.classList.add('opening');
+  setTimeout(() => {
+    envelopeScreen.classList.add('hidden');
+    mainScreen.classList.remove('hidden');
+    mainScreen.classList.add('fade-in');
+  }, 480);
+});
+
+/* ============================================================
+   Gift reveals
+   ============================================================ */
+const modalOverlay  = document.getElementById('modalOverlay');
+const modalContent  = document.getElementById('modalContent');
+const modalCloseTop = document.getElementById('modalCloseTop');
+
+function photoSlot(src, label){
+  if(src){
+    return `<div class="photo-slot"><img src="${src}" alt="${label}"></div>`;
+  }
+  return `<div class="photo-slot">add a photo here \u{1F4F7}</div>`;
+}
+
+function buildMemories(){
+  const m = CONFIG.memories;
+  return `
+    <h2 class="reveal-title">${m.title}</h2>
+    <div class="memories-layout">
+      <div class="polaroid-stack">
+        <div class="polaroid">${photoSlot(m.photo1,'memory one')}</div>
+        <div class="polaroid">${photoSlot(m.photo2,'memory two')}</div>
+      </div>
+      <div class="sticky-note">${m.note}</div>
+    </div>
+  `;
+}
+
+function buildSong(){
+  const s = CONFIG.song;
+  const qr = "https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=8&data=" + encodeURIComponent(s.link);
+  return `
+    <h2 class="reveal-title">${s.title}</h2>
+    <div class="song-layout">
+      <div class="song-text">
+        <p>${s.blurb}</p>
+        <p class="song-name heading-font">${s.songName}</p>
+      </div>
+      <div class="qr-box">
+        <img src="${qr}" alt="QR code to our song">
+        <a class="scan-btn" href="${s.link}" target="_blank" rel="noopener">Scan / Tap Me \u{1F3B5}</a>
+      </div>
+    </div>
+  `;
+}
+
+function buildLetter(){
+  const l = CONFIG.letter;
+  return `
+    <h2 class="reveal-title">${l.title}</h2>
+    <div class="letter-card">
+      <span class="salutation">${l.salutation}</span><br><br>
+      ${l.body}
+      <br><br>
+      <span class="sign-off">${l.signOff}</span>
+    </div>
+  `;
+}
+
+const builders = {
+  memories: buildMemories,
+  song: buildSong,
+  letter: buildLetter
+};
+
+document.querySelectorAll('.gift-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const gift = card.getAttribute('data-gift');
+    modalContent.innerHTML = builders[gift]() + `<button class="modal-close-bottom" id="modalCloseBottom">Close</button>`;
+    modalOverlay.classList.remove('hidden');
+    document.getElementById('modalCloseBottom').addEventListener('click', closeModal);
+  });
+});
+
+function closeModal(){
+  modalOverlay.classList.add('hidden');
+}
+modalCloseTop.addEventListener('click', closeModal);
+modalOverlay.addEventListener('click', (e) => {
+  if(e.target === modalOverlay) closeModal();
+});
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>
